@@ -47,7 +47,7 @@ object Analysis {
           StructField("DrugName", StringType),
           StructField("Quantity", DoubleType),
           StructField("Unit", StringType),
-          StructField("ActionIndicator", StringType),
+          StructField("ActionIndicator", StringType),   
           StructField("OrderFormNo", StringType),
           StructField("CorrectionNo", StringType),
           StructField("Strength", StringType),
