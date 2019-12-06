@@ -54,6 +54,7 @@ object Analysis {
           StructField("TransactionDate", StringType),
           StructField("CalcBaseWtinGrams", DoubleType),
           StructField("DosageUnit", DoubleType),
+          //Below are fields created by Washington Post for cleaner data. For readable data use these!
           StructField("TransactionID", StringType),
           StructField("ProductName", StringType), 
           StructField("IngredientName", StringType),
@@ -72,10 +73,12 @@ object Analysis {
         .csv("/home/parker/Dependencies/arcos-co-statewide-itemized.tsv")
 
       opioidData.printSchema()
-      //opioidData.describe().show()
-
-
-    // DRUG AND INGREDIENT STATS
+      opioidData.describe().show()
+      // Interesting conclusions from describe:
+      // 
+      
+      
+      // DRUG AND INGREDIENT STATS
     
 
 
