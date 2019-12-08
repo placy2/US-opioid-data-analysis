@@ -145,7 +145,9 @@ object Opioids {
 
     val perCapitaStateLevel = renamedCountyPop.join(buyerAnnualData)
       .where('BUYER_STATE === 'state && 'year === 'popYear)
-      .withColumn("purchasesPerCap", 'DOSAGE_UNIT/'population)
+      .groupBy('BUYER_STATE)
+      .agg(sum('DOSAGE_UNIT).as("totalState"))
+      .withColumn("purchasesPerCap", ('totalState/'population)
       .describe().show()
 
 
