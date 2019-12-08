@@ -129,12 +129,12 @@ object Opioids {
 //-----------------------------------------------------------------------------------------------------
 //-----------------------------------------------------------------------------------------------------
     //Examining basic stats and totals
-    buyerAnnualData.agg(sum("DOSAGE_UNIT")).show()
+    //buyerAnnualData.agg(sum("DOSAGE_UNIT")).show()
      // 7.663060302123816E10 total pills
     
-    buyerMonthly12.agg(sum("DOSAGE_UNIT").alias("sum").as[Int]).select('sum).show()
+    //buyerMonthly12.agg(sum("DOSAGE_UNIT").alias("sum").as[Int]).select('sum).show()
      // 12,663,969,567 pills in 2012
-    buyerMonthly06.agg(sum("DOSAGE_UNIT").alias("sum").as[Int]).select('sum).show()
+    //buyerMonthly06.agg(sum("DOSAGE_UNIT").alias("sum").as[Int]).select('sum).show()
      // 8,389,698,373 pills in 2006
 
     //Comparing per capita pill purchases at the state level for all years
@@ -142,7 +142,7 @@ object Opioids {
     //Aggregating on the sum of pills purchased that year in the state, divided by the population for that year in the state
     //Describing the result to examine max and min
 
-    val perCapitaStateLevel = buyerAnnualData.join(countyPopulations.select('BUYER_STATE.as("state"), 'year.as("popYear")))
+    val perCapitaStateLevel = buyerAnnualData.join(countyPopulations.select('BUYER_STATE.as("state"), 'year.as("popYear"), 'population))
       .where('BUYER_STATE === 'state && 'year === 'popYear)
       .withColumn("purchasesPerCap", 'DOSAGE_UNIT/'population)
       .describe().show()
