@@ -9,7 +9,7 @@ object Analysis {
   def main(args: Array[String]): Unit = {
     val spark = SparkSession
       .builder()
-      .master("local[*]")
+      .master("spark://pandora00:7077")
       .appName("Opioid Distribution Analysis")
       .getOrCreate()
     try {
@@ -70,7 +70,8 @@ object Analysis {
         .schema(schema)
         .option("header", "true")
         .option("delimeter", "\t")
-        .csv("/home/parker/Dependencies/arcos-co-statewide-itemized.tsv")
+        .csv("//data/BigData/students/placy")
+        //.csv("/home/parker/Dependencies/arcos-co-statewide-itemized.tsv")
 
       opioidData.printSchema()
       opioidData.describe().show()
