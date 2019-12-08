@@ -143,12 +143,10 @@ object Opioids {
     //Describing the result to examine max and min
     val renamedCountyPop = countyPopulations.select('BUYER_STATE.as("state"), 'year.as("popYear"), 'population)
 
-    val perCapitaStateLevel = renamedCountyPop.join(buyerAnnualData)
-      .where('BUYER_STATE === 'state && 'year === 'popYear)
-      .groupBy('BUYER_STATE).sum("DOSAGE_UNIT").as("totalState")
-      .withColumn("purchasesPerCap", ('totalState/'population))
-      .select('purchasesPerCap, 'BUYER_STATE, 'year)
-      .describe().show()
+    val StateTotals = renamedCountyPop.join(buyerAnnualData)
+      .where('state === 'BUYER_STATE && 'popYear === 'year)
+      .groupBy('state).agg(sum('DOSAGE_UNIT).as("totalState")
+      .describe().show(50, false)
 
 
 
