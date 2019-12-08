@@ -142,8 +142,8 @@ object Opioids {
     //Aggregating on the sum of pills purchased that year in the state, divided by the population for that year in the state
     //Describing the result to examine max and min
 
-    val perCapitaStateLevel = buyerAnnualData.join(countyPopulations)
-      .where('BUYER_STATE === 'BUYER_STATE && 'year === 'year)
+    val perCapitaStateLevel = buyerAnnualData.join(countyPopulations.select('BUYER_STATE.as("state"), 'year.as("Year")))
+      .where('BUYER_STATE === 'state && 'year === 'Year)
       .withColumn("purchasesPerCap", 'DOSAGE_UNIT/'population)
       .describe().show()
 
