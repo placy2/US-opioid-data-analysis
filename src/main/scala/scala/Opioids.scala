@@ -145,7 +145,7 @@ object Opioids {
 
     val StateTotals = renamedCountyPop.join(buyerAnnualData)
       .where('state === 'BUYER_STATE && 'popYear === 'year)
-      .groupBy('state).agg(sum('DOSAGE_UNIT).as("totalState")
+      .groupBy('state).agg(sum('DOSAGE_UNIT).as("totalState"))
       .describe().show(50, false)
 
 
