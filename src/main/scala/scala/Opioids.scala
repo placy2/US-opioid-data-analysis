@@ -8,7 +8,7 @@ object Opioids {
   def main(args: Array[String]):Unit = {
     val spark = SparkSession
       .builder()
-      .master("local[*]")//"spark://pandora00:7077")
+      .master("spark://pandora00:7077")
       .appName("Opioid Distribution Analysis")
       .getOrCreate()
 
@@ -132,7 +132,8 @@ object Opioids {
     buyerAnnualData.agg(sum("DOSAGE_UNIT")).show()
       // 7.663060302123816E10 total pills
     
-    println(buyerMonthly12.agg(sum("DOSAGE_UNIT")).collect()(0) - buyerMonthly06.agg(sum("DOSAGE_UNIT")).collect()(0))
+    buyerMonthly12.agg(sum("DOSAGE_UNIT").alias("sum").as[Double]).select('sum).show()
+    buyerMonthly06.agg(sum("DOSAGE_UNIT").alias("sum").as[Double]).select('sum).show()
 
 
 
