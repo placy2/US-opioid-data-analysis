@@ -130,11 +130,12 @@ object Opioids {
 //-----------------------------------------------------------------------------------------------------
     //Examining basic stats and totals
     buyerAnnualData.agg(sum("DOSAGE_UNIT")).show()
-      // 7.663060302123816E10 total pills
+     // 7.663060302123816E10 total pills
     
-    buyerMonthly12.agg(sum("DOSAGE_UNIT").alias("sum").as[Double]).select('sum).show()
-    buyerMonthly06.agg(sum("DOSAGE_UNIT").alias("sum").as[Double]).select('sum).show()
-
+    buyerMonthly12.agg(sum("DOSAGE_UNIT").alias("sum").as[Int]).select('sum).show()
+     // 12,663,969,567 pills in 2012
+    buyerMonthly06.agg(sum("DOSAGE_UNIT").alias("sum").as[Int]).select('sum).show()
+     // 8,389,698,373 pills in 2006
 
 
 
