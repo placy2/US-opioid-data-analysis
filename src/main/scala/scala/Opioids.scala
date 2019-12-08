@@ -137,6 +137,17 @@ object Opioids {
     buyerMonthly06.agg(sum("DOSAGE_UNIT").alias("sum").as[Int]).select('sum).show()
      // 8,389,698,373 pills in 2006
 
+    //Comparing per capita pill purchases at the state level for all years
+    //Joining pop_counties... with buyer_annual on the condition that both year and state match
+    //Aggregating on the sum of pills purchased that year in the state, divided by the population for that year in the state
+    //Describing the result to examine max and min
+
+    val perCapitaStateLevel = buyerAnnualData.join(countyPopulations)
+      .where('BUYER_STATE === 'BUYER_STATE && 'year === 'year)
+      .withColumn("purchasesPerCap", 'DOSAGE_UNIT/'population)
+      .describe().show()
+
+
 
 
 
