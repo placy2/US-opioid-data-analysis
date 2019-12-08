@@ -141,13 +141,14 @@ object Opioids {
     //Joining pop_counties... with buyer_annual on the condition that both year and state match
     //Aggregating on the sum of pills purchased that year in the state, divided by the population for that year in the state
     //Describing the result to examine max and min
-    val renamedCountyPop = countyPopulations.select('BUYER_STATE.as("state"), 'year.as("popYear"), 'population)
+    val renamedCounty = countyPopulations.select('BUYER_STATE.as("state"), 'year.as("popYear"))
 
-    val StateTotals = renamedCountyPop.join(buyerAnnualData)
+    val StateTotals = renamedCounty.join(buyerAnnualData)
       .where('state === 'BUYER_STATE && 'popYear === 'year)
       .groupBy('state).agg(sum('DOSAGE_UNIT).as("totalState"))
-      .describe().show(50, false)
+      .show(50, false)
 
+    val 
 
 
 
