@@ -138,9 +138,6 @@ object Opioids {
      // 8,389,698,373 pills in 2006
 
     //Comparing per capita pill purchases at the state level for all years
-    //Joining pop_counties... with buyer_annual on the condition that both year and state match
-    //Aggregating on the sum of pills purchased that year in the state, divided by the population for that year in the state
-    //Describing the result to examine max and min
     val renamedCounty = countyPopulations.select('BUYER_STATE.as("state"), 'year.as("popYear"))
 
     val StateTotals = renamedCounty.join(buyerAnnualData)
@@ -148,7 +145,7 @@ object Opioids {
       .groupBy('state).agg(sum('DOSAGE_UNIT).as("totalState"))
       .show(50, false)
 
-    val 
+    
 
 
 
