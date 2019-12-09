@@ -27,40 +27,11 @@ object Opioids {
       .option("header", "true")
       .csv("/data/BigData/students/placy/arcos-api/data/buyer_annual.csv")
 
-    val buyerMonthly06 = spark.read
+    val buyerMonthlyData = spark.read
       .option("inferSchema", "true")
       .option("header", "true")
-      .csv("/data/BigData/students/placy/arcos-api/data/buyer_monthly2006.csv")
+      .csv("/data/BigData/students/placy/arcos-api/data/buyerConcatMonthly.csv")
 
-    val buyerMonthly07 = spark.read
-      .option("inferSchema", "true")
-      .option("header", "true")
-      .csv("/data/BigData/students/placy/arcos-api/data/buyer_monthly2007.csv")
-
-    val buyerMonthly08 = spark.read
-      .option("inferSchema", "true")
-      .option("header", "true")
-      .csv("/data/BigData/students/placy/arcos-api/data/buyer_monthly2008.csv")
-
-    val buyerMonthly09 = spark.read
-      .option("inferSchema", "true")
-      .option("header", "true")
-      .csv("/data/BigData/students/placy/arcos-api/data/buyer_monthly2009.csv")
-
-    val buyerMonthly10 = spark.read
-      .option("inferSchema", "true")
-      .option("header", "true")
-      .csv("/data/BigData/students/placy/arcos-api/data/buyer_monthly2010.csv")
-
-    val buyerMonthly11 = spark.read
-      .option("inferSchema", "true")
-      .option("header", "true")
-      .csv("/data/BigData/students/placy/arcos-api/data/buyer_monthly2011.csv")
-
-    val buyerMonthly12 = spark.read
-      .option("inferSchema", "true")
-      .option("header", "true")
-      .csv("/data/BigData/students/placy/arcos-api/data/buyer_monthly2012.csv")
 
     val countyAnnualData = spark.read
       .option("inferSchema", "true")
@@ -178,8 +149,9 @@ object Opioids {
 
     // SwingRenderer(perCapPlot, 1200, 800, true)
 
-    val Row(coeff1: Matrix) = Correlation.corr(buyerAnnualData, "DOSAGE_UNIT").head
-    println(s"Pearson correlation matrix:\n $coeff1")
+  // Using Linear Regression within the dataset
+    val renamedLatLon = pharmacyLatLon.select('BUYER_DEA_NO.as("code"), 'lat, 'lon)
+    val joinedLatLon = renamedLatLon.join(buyerMonthlyData).where('code === 'BUYER_DEA_NO).describe().show()
 
 
     spark.sparkContext.stop()
