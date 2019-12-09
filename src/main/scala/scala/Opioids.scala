@@ -9,6 +9,9 @@ import swiftvis2.plotting.renderer.SwingRenderer
 import org.apache.spark.ml.stat.Correlation
 import org.apache.spark.ml.linalg.Matrix
 import org.apache.spark.sql.Row
+import org.apache.spark.ml.feature.VectorAssembler
+import org.apache.spark.ml.evaluation.RegressionEvaluator
+import org.apache.spark.ml.regression.LinearRegression
 
 object Opioids {
   def main(args: Array[String]): Unit = {
@@ -150,8 +153,21 @@ object Opioids {
     // SwingRenderer(perCapPlot, 1200, 800, true)
 
   // Using Linear Regression within the dataset
-    val renamedLatLon = pharmacyLatLon.select('BUYER_DEA_NO.as("code"), 'lat, 'lon)
-    val joinedLatLon = renamedLatLon.join(buyerMonthlyData).where('code === 'BUYER_DEA_NO).describe().show()
+  
+    val evaluator = new RegressionEvaluator().setLabelCol("DOSAGE_UNIT").setPredictionCol("prediction").setMetricName("rmse")
+
+    val renamedLatLon = pharmacyLatLon.select('BUYER_DEA_NO, 'lat, 'lon)
+    val joinedLatLon = renamedLatLon.join(buyerMonthlyData,'BUYER_DEA_NO)//.describe().show()
+
+    val llVA = new VectorAssembler().setInputCols(Array("lat", "lon")).setOutputCol("llVect")
+    val latLonRegVect = llVA.transform(joinedLatLon.na.drop(Seq("DOSAGE_UNIT", "lat", "lon")))
+
+    val latLonLR = new LinearRegression().setFeaturesCol("llVect").setLabelCol("DOSAGE_UNIT")
+    val latLonLRModel = latLonLR.fit(latLonRegVect)
+    val predictions = latLonLRModel.transform(latLonRegVect)
+
+    println("Average error: " + evaluator.evaluate(predictions))
+
 
 
     spark.sparkContext.stop()
