@@ -113,7 +113,7 @@ object Opioids {
       .option("header", "true")
       .option("delimiter", "\t")
       .csv("/data/BigData/bls/la/la.data.concatenatedStateFiles"))
-      .filter('year > 2005 && 'year < 2012)
+      .filter('stateYear > 2005 && 'stateYear < 2012)
 
 //-----------------------------------------------------------------------------------------------------
 //-----------------------------------------------------------------------------------------------------
