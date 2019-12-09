@@ -106,7 +106,8 @@ object Opioids {
       .schema(areaSchema)
       .option("header", "true")
       .option("delimeter", "\t")
-      .csv("/data/BigData/bls/la/la.area").describe().show()
+      .csv("/data/BigData/bls/la/la.area")
+    blsAreaData.describe().show()
 
     val blsStateData = (spark.read
       .schema(stateSchema)
@@ -172,8 +173,8 @@ object Opioids {
     // 16,547 with lat and lon
   
   // Using Linear Regression with unemployment
-    println(/*val unempCounties = */blsAreaData.where('areaName.contains("County")).count())
-    countyPopulations.agg(countDistinct("county_name")).show()
+    //println(/*val unempCounties = */blsAreaData.where('areaName.contains("County")).count())
+    //countyPopulations.agg(countDistinct("county_name")).show()
 
 
     
