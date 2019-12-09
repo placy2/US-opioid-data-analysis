@@ -85,7 +85,7 @@ object Opioids {
     val stateSchema = StructType(
       Array(
         StructField("id", StringType),
-        StructField("year", IntegerType),
+        StructField("stateYear", IntegerType),
         StructField("period", StringType),
         StructField("value", DoubleType)
       )
@@ -172,9 +172,16 @@ object Opioids {
     // 16,547 with lat and lon
   
   // Using Linear Regression with unemployment
-   val unempCounties = blsAreaData.where('areaType === "F").withColumn("upperCounty", upper('areaName))
-  
-   val joinedUnempCounties = countyMonthlyData.join(unempCounties).filter('upperCounty.contains('BUYER_COUNTY)).show(5, false)
+    val unempCounties = blsAreaData.where('areaType === "F").withColumn("upperCounty", upper('areaName))
+    val joinedUnempCounties = countyMonthlyData.join(unempCounties).filter('upperCounty.contains('BUYER_COUNTY))//.show(5, false)
+    val bigJoinedUnemp = joinedUnempCounties.join(blsStateData).where('id.contains('areaCode) && 'year === 'stateYear)
+    
+    bigJoinedUnemp.printSchema()
+    // val smallerPop = countyPopulations.select('BUYER_COUNTY.as("county"), 'STATE.as("stateNum"), 'year.as("countyYear"), 'population)
+    // val popJoinedUnemp = smallerPop.join(bigJoinedUnemp.toDF()).where('county === 'BUYER_COUNTY, 'year === 'countyYear)
+    // popJoinedUnemp.printSchema
+
+    val unempVA = new VectorAssembler().setInputCols(Array(""))
 
 
 
