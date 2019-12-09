@@ -158,24 +158,24 @@ object Opioids {
   
     val evaluator = new RegressionEvaluator().setLabelCol("DOSAGE_UNIT").setPredictionCol("prediction").setMetricName("rmse")
 
-    val renamedLatLon = pharmacyLatLon.select('BUYER_DEA_NO.as("code"), 'lat, 'lon)
-    val joinedLatLon = renamedLatLon.join(buyerMonthlyData.filter('year === 2012)).where('code === 'BUYER_DEA_NO)
-    joinedLatLon.describe().show()
+    // val renamedLatLon = pharmacyLatLon.select('BUYER_DEA_NO.as("code"), 'lat, 'lon)
+    // val joinedLatLon = renamedLatLon.join(buyerMonthlyData.filter('year === 2012)).where('code === 'BUYER_DEA_NO)
+    // //joinedLatLon.describe().show()
 
-    val plotDataLatLon = joinedLatLon.select('lat.as[Double], 'lon.as[Double], 'DOSAGE_UNIT.as[Double]).collect()
-    val pointSizes = plotDataLatLon.map(x => (x._3 * 0.000053) + 1)
+    // val plotDataLatLon = joinedLatLon.select('lat.as[Double], 'lon.as[Double], 'DOSAGE_UNIT.as[Double]).collect()
+    // val pointSizes = plotDataLatLon.map(x => (x._3 * 0.000053) + 1)
 
-    val locPlot = Plot.scatterPlot( 
-      plotDataLatLon.map(_._2),
-      plotDataLatLon.map(_._1),
-      "Pharmacies in the US with Total Opioid Distributions",
-      "Longitude",
-      "Latitude",
-      pointSizes,
-      BlueARGB
-    )
+    // val locPlot = Plot.scatterPlot( 
+    //   plotDataLatLon.map(_._2),
+    //   plotDataLatLon.map(_._1),
+    //   "Pharmacies in the US with Total Opioid Distributions",
+    //   "Longitude",
+    //   "Latitude",
+    //   pointSizes,
+    //   BlueARGB
+    // )
 
-    SwingRenderer(locPlot, 1500, 1000, true)
+    // SwingRenderer(locPlot, 1500, 1000, true)
 
 
     // val llVA = new VectorAssembler().setInputCols(Array("lat", "lon")).setOutputCol("llVect")
