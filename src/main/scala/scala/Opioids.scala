@@ -95,7 +95,10 @@ object Opioids {
       Array(
         StructField("areaType", StringType),
         StructField("areaCode", StringType),
-        StructField("areaName", StringType)
+        StructField("areaName", StringType),
+        StructField("displayLevel", StringType),
+        StructField("selectable", StringType),
+        StructField("sort_sequence", IntegerType)
       )
     )
 
@@ -104,7 +107,6 @@ object Opioids {
       .option("header", "true")
       .option("delimeter", "\t")
       .csv("/data/BigData/bls/la/la.area")
-      .filter('areaType === "F" || 'areaType === "A")
 
     val blsStateData = (spark.read
       .schema(stateSchema)
@@ -170,7 +172,7 @@ object Opioids {
     // 16,547 with lat and lon
   
   // Using Linear Regression with unemployment
-    println(/*val unempCounties = */blsAreaData.filter('areaType === "F").count())
+    println(/*val unempCounties = */blsAreaData.where('areaName.contains("County")).count())
     countyPopulations.agg(countDistinct("county_name")).show()
 
 
