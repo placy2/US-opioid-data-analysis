@@ -163,7 +163,7 @@ object Opioids {
     joinedLatLon.describe().show()
 
     val plotDataLatLon = joinedLatLon.select('lat.as[Double], 'lon.as[Double], 'DOSAGE_UNIT.as[Double]).collect()
-    val pointSizes = plotDataLatLon.map(x => (x._3 * 0.00053) + 1)
+    val pointSizes = plotDataLatLon.map(x => (x._3 * 0.000053) + 1)
 
     val locPlot = Plot.scatterPlot( 
       plotDataLatLon.map(_._2),
