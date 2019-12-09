@@ -106,7 +106,7 @@ object Opioids {
       .schema(areaSchema)
       .option("header", "true")
       .option("delimeter", "\t")
-      .csv("/data/BigData/bls/la/la.area")
+      .csv("/data/BigData/bls/la/la.area").describe().show()
 
     val blsStateData = (spark.read
       .schema(stateSchema)
@@ -188,17 +188,17 @@ object Opioids {
 
 
 
-    val renamedBuyerMonthly = buyerMonthlyData.select('BUYER_DEA_NO.as("code"), 'DOSAGE_UNIT.as("pills").as[Double], 'month)
-    val joinedDetails = renamedBuyerMonthly.join(buyerDetailData).where('code === 'BUYER_DEA_NO)
+    // val renamedBuyerMonthly = buyerMonthlyData.select('BUYER_DEA_NO.as("code"), 'DOSAGE_UNIT.as("pills").as[Double], 'month)
+    // val joinedDetails = renamedBuyerMonthly.join(buyerDetailData).where('code === 'BUYER_DEA_NO)
 
-    val detailVA = new VectorAssembler().setInputCols(Array("BUYER_BUS_ACT", "BUYER_ZIP", "month")).setOutputCol("detailVect")
-    val detailRegVect = detailVA.transform(joinedDetails.na.drop(Seq("BUYER_BUS_ACT", "BUYER_CITY", "BUYER_STATE", "BUYER_ZIP", "month", "pills")))
+    // val detailVA = new VectorAssembler().setInputCols(Array("BUYER_BUS_ACT", "BUYER_ZIP", "month")).setOutputCol("detailVect")
+    // val detailRegVect = detailVA.transform(joinedDetails.na.drop(Seq("BUYER_BUS_ACT", "BUYER_CITY", "BUYER_STATE", "BUYER_ZIP", "month", "pills")))
 
-    val detailLR = new LinearRegression().setFeaturesCol("detailVect").setLabelCol("pills")
-    val detailLRModel = detailLR.fit(detailRegVect)
-    val predictions = detailLRModel.transform(detailRegVect)
+    // val detailLR = new LinearRegression().setFeaturesCol("detailVect").setLabelCol("pills")
+    // val detailLRModel = detailLR.fit(detailRegVect)
+    // val predictions = detailLRModel.transform(detailRegVect)
 
-    println("Average error: " + evaluator.evaluate(predictions))
+    // println("Average error: " + evaluator.evaluate(predictions))
 
     spark.sparkContext.stop()
     println("Application finished.")
