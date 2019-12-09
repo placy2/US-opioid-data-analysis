@@ -6,6 +6,10 @@ import org.apache.spark.sql.functions._
 import swiftvis2.plotting._
 import swiftvis2.plotting.styles.BarStyle.DataAndColor
 import swiftvis2.plotting.renderer.SwingRenderer
+import org.apache.spark.ml.stat.Correlation
+import org.apache.spark.ml.linalg.Matrix
+import org.apache.spark.sql.Row
+
 object Opioids {
   def main(args: Array[String]): Unit = {
     val spark = SparkSession
@@ -148,31 +152,35 @@ object Opioids {
     // 8,389,698,373 pills in 2006
 
     //Comparing per capita pill purchases at the state level for all years
-    val renamedStatePop =
-      statePopulations.select('BUYER_STATE.as("state"), 'year.as("popYear"), 'population)
+    // val renamedStatePop =
+    //   statePopulations.select('BUYER_STATE.as("state"), 'year.as("popYear"), 'population)
 
-    val stateJoined = renamedStatePop
-      .join(buyerAnnualData)
-      .where('state === 'BUYER_STATE && 'popYear === 'year)
-    //.show(50, false)
+    // val stateJoined = renamedStatePop
+    //   .join(buyerAnnualData)
+    //   .where('state === 'BUYER_STATE && 'popYear === 'year)
+    // //.show(50, false)
 
-    val stateGrouped = stateJoined.select(
-      'state.as[String],
-      'popYear.as[Int],
-      'DOSAGE_UNIT.as[Double],
-      'population.as[Double]
-    ).groupBy('state).agg(Map(
-      "DOSAGE_UNIT" -> "sum",
-      "population" -> "avg",
-    ))
+    // val stateGrouped = stateJoined.select(
+    //   'state.as[String],
+    //   'popYear.as[Int],
+    //   'DOSAGE_UNIT.as[Double],
+    //   'population.as[Double]
+    // ).groupBy('state).agg(Map(
+    //   "DOSAGE_UNIT" -> "sum",
+    //   "population" -> "avg",
+    // ))
     
-    val statePerCap = stateGrouped.withColumn("pillsPerCap", ($"sum(DOSAGE_UNIT)") / $"avg(population)").orderBy(desc("pillsPerCap"))//.show(50, false)
+    // val statePerCap = stateGrouped.withColumn("pillsPerCap", ($"sum(DOSAGE_UNIT)") / $"avg(population)").orderBy(desc("pillsPerCap"))//.show(50, false)
 
-    val perCapPlotData = statePerCap.select('state.as[String], 'pillsPerCap.as[Double]).collect()
-    val perCapPlot = Plot.barPlot(perCapPlotData.map(_._1), Seq(
-      DataAndColor(perCapPlotData.map(_._2),  BlackARGB)), false, 0.8, "Oxycodone & Hydrocodone distributions in U.S.A.", "States", "Pills per capita")
+    // val perCapPlotData = statePerCap.select('state.as[String], 'pillsPerCap.as[Double]).collect()
+    // val perCapPlot = Plot.barPlot(perCapPlotData.map(_._1), Seq(
+    //   DataAndColor(perCapPlotData.map(_._2),  BlackARGB)), false, 0.8, "Oxycodone & Hydrocodone distributions in U.S.A.", "States", "Pills per capita")
 
-    SwingRenderer(perCapPlot, 1200, 800, true)
+    // SwingRenderer(perCapPlot, 1200, 800, true)
+
+    val Row(coeff1: Matrix) = Correlation.corr(buyerAnnualData.toDF("features"), "features").head
+    println(s"Pearson correlation matrix:\n $coeff1")
+
 
     spark.sparkContext.stop()
     println("Application finished.")
