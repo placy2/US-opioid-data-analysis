@@ -180,7 +180,7 @@ object Opioids {
     val popJoinedUnemp = smallerPop.join(bigJoinedUnemp).filter('county === 'BUYER_COUNTY && 'year === 'countyYear)
 
     val unempVA = new VectorAssembler().setInputCols(Array("stateNum", "countyYear", "month", "population", "value")).setOutputCol("unempVect")
-    val popUnempWithVect = unempVA.transform(popJoinedUnemp.na.drop(Seq("DOSAGE_UNIT", "stateNum", "countyYear", "month", "population", "value")))
+    val popUnempWithVect = unempVA.transform(popJoinedUnemp.na.drop(Seq("DOSAGE_UNIT", "stateNum", "countyYear", "month", "value")))
 
     val popUnempLR = new LinearRegression().setFeaturesCol("unempVect").setLabelCol("DOSAGE_UNIT")
     val popUnempLRModel = popUnempLR.fit(popUnempWithVect)
