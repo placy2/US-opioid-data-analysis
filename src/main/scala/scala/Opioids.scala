@@ -3,7 +3,9 @@ import org.apache.spark.sql.SparkSession
 import org.apache.spark.sql.DataFrame
 import org.apache.spark.sql.types._
 import org.apache.spark.sql.functions._
-
+import swiftvis2.plotting._
+import swiftvis2.plotting.styles.BarStyle.DataAndColor
+import swiftvis2.plotting.renderer.SwingRenderer
 object Opioids {
   def main(args: Array[String]): Unit = {
     val spark = SparkSession
@@ -164,7 +166,13 @@ object Opioids {
       "population" -> "avg",
     ))
     
-    stateGrouped.withColumn("pillsPerCap", ($"sum(DOSAGE_UNIT)") / $"avg(population)").orderBy(desc("pillsPerCap")).show(50, false)
+    val statePerCap = stateGrouped.withColumn("pillsPerCap", ($"sum(DOSAGE_UNIT)") / $"avg(population)")//.orderBy(desc("pillsPerCap")).show(50, false)
+
+    val perCapPlotData = statePerCap.select('state.as[String], 'pillsPerCap.as[Int]).collect()
+    val perCapPlot = Plot.barPlot(perCapPlotData.map(_._1), Seq(
+      DataAndColor(perCapPlotData.map(_._2),  BlackARGB)), false, 1.0, "Oxycodone & Hydrocodone distributions in U.S.A.", "States", "Pills per capita")
+
+    SwingRenderer(perCapPlot, 1200, 800, true)
 
     spark.sparkContext.stop()
     println("Application finished.")
