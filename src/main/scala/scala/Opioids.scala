@@ -95,10 +95,10 @@ object Opioids {
       Array(
         StructField("areaType", StringType),
         StructField("areaCode", StringType),
-        StructField("areaName", StringType),
-        StructField("displayLevel", StringType),
-        StructField("selectable", StringType),
-        StructField("sort_sequence", IntegerType)
+        StructField("areaName", StringType)
+        // StructField("displayLevel", StringType),
+        // StructField("selectable", StringType),
+        // StructField("sort_sequence", IntegerType)
       )
     )
 
