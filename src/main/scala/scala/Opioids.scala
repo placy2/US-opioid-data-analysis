@@ -107,7 +107,6 @@ object Opioids {
       .option("header", "true")
       .option("delimiter", "\t")
       .csv("/data/BigData/bls/la/la.area")
-    blsAreaData.describe().show()
 
     val blsStateData = (spark.read
       .schema(stateSchema)
@@ -176,7 +175,7 @@ object Opioids {
     println(/*val unempCounties = */blsAreaData.where('areaName.contains("County")).count())
     countyPopulations.agg(countDistinct("county_name")).show()
 
-    
+
     
 
 
