@@ -176,7 +176,7 @@ object Opioids {
     val joinedUnempCounties = countyMonthlyData.join(unempCounties).filter('upperCounty.contains('BUYER_COUNTY))//.show(5, false)
     val bigJoinedUnemp = joinedUnempCounties.join(blsStateData).where('id.contains('areaCode) && 'year === 'stateYear)
 
-    val smallerPop = countyPopulations.select('BUYER_COUNTY.as("county"), 'STATE.as("stateNum"), 'year.as("countyYear"), 'population.as[Int])
+    val smallerPop = countyPopulations.select('BUYER_COUNTY.as("county"), 'STATE.as("stateNum"), 'year.as("countyYear"), 'population.as[Double])
     val popJoinedUnemp = smallerPop.join(bigJoinedUnemp).filter('county === 'BUYER_COUNTY && 'year === 'countyYear)
 
     val unempVA = new VectorAssembler().setInputCols(Array("stateNum", "countyYear", "month", "population", "value")).setOutputCol("unempVect")
