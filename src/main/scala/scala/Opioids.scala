@@ -160,8 +160,8 @@ object Opioids {
       'DOSAGE_UNIT.as[Double],
       'population.as[Double]
     ).groupBy('state).agg(Map(
-      "DOSAGE_UNIT" -> sum,
-      "population" -> avg,
+      "DOSAGE_UNIT" -> "sum",
+      "population" -> "avg",
     )).show(50, false)
     
 
