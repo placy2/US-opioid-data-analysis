@@ -156,8 +156,8 @@ object Opioids {
   
     val evaluator = new RegressionEvaluator().setLabelCol("DOSAGE_UNIT").setPredictionCol("prediction").setMetricName("rmse")
 
-    val renamedLatLon = pharmacyLatLon.select('BUYER_DEA_NO, 'lat, 'lon)
-    val joinedLatLon = renamedLatLon.join(buyerMonthlyData,'BUYER_DEA_NO)//.describe().show()
+    val renamedLatLon = pharmacyLatLon.select('BUYER_DEA_NO.as("code"), 'lat, 'lon)
+    val joinedLatLon = renamedLatLon.join(buyerMonthlyData).where('code === 'BUYER_DEA_NO)//.describe().show()
 
     val llVA = new VectorAssembler().setInputCols(Array("lat", "lon")).setOutputCol("llVect")
     val latLonRegVect = llVA.transform(joinedLatLon.na.drop(Seq("DOSAGE_UNIT", "lat", "lon")))
