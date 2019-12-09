@@ -162,7 +162,20 @@ object Opioids {
     val joinedLatLon = renamedLatLon.join(buyerMonthlyData).where('code === 'BUYER_DEA_NO).groupBy('code).avg("DOSAGE_UNIT").alias('avgPills).na.drop()
     joinedLatLon.describe().show()
 
-    //val plotLatLon = joinedLatLon.select('lat.as[Double], 'lon.as[Double], 'avgPills.as[Double]).count()
+    val plotDataLatLon = joinedLatLon.select('lat.as[Double], 'lon.as[Double], 'avgPills.as[Double]).collect()
+    val pointSizes = plotDataLatLon.map(x => (x._3 * 0.00000053) + 1)
+
+    val locPlot = Plot.scatterPlot( 
+      plotDataLatLon.map(_._2),
+      plotDataLatLon.map(_._3),
+      "Pharmacies in the US with Total Opioid Distributions",
+      "Longitude",
+      "Latitude",
+      pointSizes,
+      BlueARGB
+    )
+
+    SwingRenderer(locPlot)
 
 
     // val llVA = new VectorAssembler().setInputCols(Array("lat", "lon")).setOutputCol("llVect")
@@ -183,8 +196,8 @@ object Opioids {
     // val smallerPop = countyPopulations.select('BUYER_COUNTY.as("county"), 'STATE.as("stateNum"), 'year.as("countyYear"), $"population".cast(DoubleType))
     // val popJoinedUnemp = smallerPop.join(bigJoinedUnemp).filter('county === 'BUYER_COUNTY && 'year === 'countyYear)
 
-    val unempVA = new VectorAssembler().setInputCols(Array("stateNum", "countyYear", "month", "value")).setOutputCol("unempVect")
-    val popUnempWithVect = unempVA.transform(bigJoinedUnemp.na.drop(Seq("DOSAGE_UNIT", "stateNum", "year", "month", "value")))
+    val unempVA = new VectorAssembler().setInputCols(Array("year", "month", "value", "count")).setOutputCol("unempVect")
+    val popUnempWithVect = unempVA.transform(bigJoinedUnemp.na.drop(Seq("DOSAGE_UNIT", "year", "month", "value", "count")))
 
     val popUnempLR = new LinearRegression().setFeaturesCol("unempVect").setLabelCol("DOSAGE_UNIT")
     val popUnempLRModel = popUnempLR.fit(popUnempWithVect)
