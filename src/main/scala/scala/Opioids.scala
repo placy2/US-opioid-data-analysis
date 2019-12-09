@@ -168,7 +168,7 @@ object Opioids {
     
     val statePerCap = stateGrouped.withColumn("pillsPerCap", ($"sum(DOSAGE_UNIT)") / $"avg(population)")//.orderBy(desc("pillsPerCap")).show(50, false)
 
-    val perCapPlotData = statePerCap.select('state.as[String], 'pillsPerCap.as[Int]).collect()
+    val perCapPlotData = statePerCap.select('state.as[String], 'pillsPerCap.as[Double]).collect()
     val perCapPlot = Plot.barPlot(perCapPlotData.map(_._1), Seq(
       DataAndColor(perCapPlotData.map(_._2),  BlackARGB)), false, 1.0, "Oxycodone & Hydrocodone distributions in U.S.A.", "States", "Pills per capita")
 
