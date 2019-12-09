@@ -172,7 +172,7 @@ object Opioids {
     // 16,547 with lat and lon
   
   // Using Linear Regression with unemployment
-   val unempCounties = blsAreaData.where('areaType === "F").withColumn("upperCounty", lower('areaName))
+   val unempCounties = blsAreaData.where('areaType === "F").withColumn("upperCounty", upper('areaName))
   
    val joinedUnempCounties = countyMonthlyData.join(unempCounties).filter('upperCounty.contains('BUYER_COUNTY)).show(5, false)
 
