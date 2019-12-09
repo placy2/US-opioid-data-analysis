@@ -156,19 +156,30 @@ object Opioids {
   
     val evaluator = new RegressionEvaluator().setLabelCol("DOSAGE_UNIT").setPredictionCol("prediction").setMetricName("rmse")
 
-    val renamedLatLon = pharmacyLatLon.select('BUYER_DEA_NO.as("code"), 'lat, 'lon)
-    val joinedLatLon = renamedLatLon.join(buyerMonthlyData).where('code === 'BUYER_DEA_NO)//.describe().show()
+    // val renamedLatLon = pharmacyLatLon.select('BUYER_DEA_NO.as("code"), 'lat, 'lon)
+    // val joinedLatLon = renamedLatLon.join(buyerMonthlyData).where('code === 'BUYER_DEA_NO)//.describe().show()
 
-    val llVA = new VectorAssembler().setInputCols(Array("lat", "lon")).setOutputCol("llVect")
-    val latLonRegVect = llVA.transform(joinedLatLon.na.drop(Seq("DOSAGE_UNIT", "lat", "lon")))
+    // val llVA = new VectorAssembler().setInputCols(Array("lat", "lon")).setOutputCol("llVect")
+    // val latLonRegVect = llVA.transform(joinedLatLon.na.drop(Seq("DOSAGE_UNIT", "lat", "lon")))
 
-    val latLonLR = new LinearRegression().setFeaturesCol("llVect").setLabelCol("DOSAGE_UNIT")
-    val latLonLRModel = latLonLR.fit(latLonRegVect)
-    val predictions = latLonLRModel.transform(latLonRegVect)
+    // val latLonLR = new LinearRegression().setFeaturesCol("llVect").setLabelCol("DOSAGE_UNIT")
+    // val latLonLRModel = latLonLR.fit(latLonRegVect)
+    // val predictions = latLonLRModel.transform(latLonRegVect)
+
+    // println("Average error: " + evaluator.evaluate(predictions))
+    // 16,547 with lat and lon
+
+    val renamedBuyerMonthly = buyerMonthlyData.select('BUYER_DEA_NO.as("code"), 'DOSAGE_UNIT.as("pills").as[Double], 'month)
+    val joinedDetails = renamedBuyerMonthly.join(buyerDetailData).where('code === 'BUYER_DEA_NO)
+
+    val detailVA = new VectorAssembler().setInputCols(Array("BUYER_BUS_ACT", "BUYER_CITY", "BUYER_STATE", "BUYER_ZIP", "month")).setOutputCol("detailVect")
+    val detailRegVect = detailVA.transform(joinedDetails.na.drop(Seq("BUYER_BUS_ACT", "BUYER_CITY", "BUYER_STATE", "BUYER_ZIP", "month", "pills")))
+
+    val detailLR = new LinearRegression().setFeaturesCol("detailVect").setLabelCol("pills")
+    val detailLRModel = detailLR.fit(detailRegVect)
+    val predictions = detailLRModel.transform(detailRegVect)
 
     println("Average error: " + evaluator.evaluate(predictions))
-
-
 
     spark.sparkContext.stop()
     println("Application finished.")
