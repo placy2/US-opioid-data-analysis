@@ -105,14 +105,14 @@ object Opioids {
     val blsAreaData = spark.read
       .schema(areaSchema)
       .option("header", "true")
-      .option("delimeter", "\t")
+      .option("delimiter", "\t")
       .csv("/data/BigData/bls/la/la.area")
     blsAreaData.describe().show()
 
     val blsStateData = (spark.read
       .schema(stateSchema)
       .option("header", "true")
-      .option("delimeter", "\t")
+      .option("delimiter", "\t")
       .csv("/data/BigData/bls/la/la.data.concatenatedStateFiles"))
       .filter('year > 2005 && 'year < 2012)
 
