@@ -162,8 +162,9 @@ object Opioids {
     ).groupBy('state).agg(Map(
       "DOSAGE_UNIT" -> "sum",
       "population" -> "avg",
-    )).show(50, false)
+    ))
     
+    stateGrouped.withColumn("pillsPerCap", ($"sum(DOSAGE_UNIT)") / ("avg(population)")).orderBy(desc("pillsPerCap")).show(50, false)
 
     spark.sparkContext.stop()
     println("Application finished.")
