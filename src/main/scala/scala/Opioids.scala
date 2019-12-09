@@ -178,7 +178,7 @@ object Opioids {
 
     // SwingRenderer(perCapPlot, 1200, 800, true)
 
-    val Row(coeff1: Matrix) = Correlation.corr(buyerAnnualData.toDF("features"), "features").head
+    val Row(coeff1: Matrix) = Correlation.corr(buyerAnnualData, "DOSAGE_UNIT").head
     println(s"Pearson correlation matrix:\n $coeff1")
 
 
