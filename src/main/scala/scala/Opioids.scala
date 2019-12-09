@@ -168,11 +168,28 @@ object Opioids {
 
     // println("Average error: " + evaluator.evaluate(predictions))
     // 16,547 with lat and lon
+  
+  // Using Linear Regression with unemployment
+    println(/*val unempCounties = */blsAreaData.filter('areaType === "F").count())
+    countyPopulations.agg(countDistinct("county_name")).show()
+
+
+    
+
+
+
+
+
+
+
+
+
+
 
     val renamedBuyerMonthly = buyerMonthlyData.select('BUYER_DEA_NO.as("code"), 'DOSAGE_UNIT.as("pills").as[Double], 'month)
     val joinedDetails = renamedBuyerMonthly.join(buyerDetailData).where('code === 'BUYER_DEA_NO)
 
-    val detailVA = new VectorAssembler().setInputCols(Array("BUYER_BUS_ACT", "BUYER_CITY", "BUYER_STATE", "BUYER_ZIP", "month")).setOutputCol("detailVect")
+    val detailVA = new VectorAssembler().setInputCols(Array("BUYER_BUS_ACT", "BUYER_ZIP", "month")).setOutputCol("detailVect")
     val detailRegVect = detailVA.transform(joinedDetails.na.drop(Seq("BUYER_BUS_ACT", "BUYER_CITY", "BUYER_STATE", "BUYER_ZIP", "month", "pills")))
 
     val detailLR = new LinearRegression().setFeaturesCol("detailVect").setLabelCol("pills")
