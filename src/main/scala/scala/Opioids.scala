@@ -147,7 +147,7 @@ object Opioids {
 
     //Comparing per capita pill purchases at the state level for all years
     val renamedStatePop =
-      statePopulations.select('BUYER_STATE.as("state"), 'year.as("popYear"))
+      statePopulations.select('BUYER_STATE.as("state"), 'year.as("popYear"), 'population)
 
     val stateJoined = renamedStatePop
       .join(buyerAnnualData)
