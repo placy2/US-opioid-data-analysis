@@ -167,7 +167,7 @@ object Opioids {
 
     val locPlot = Plot.scatterPlot( 
       plotDataLatLon.map(_._2),
-      plotDataLatLon.map(_._3),
+      plotDataLatLon.map(_._1),
       "Pharmacies in the US with Total Opioid Distributions",
       "Longitude",
       "Latitude",
@@ -196,8 +196,8 @@ object Opioids {
     // val smallerPop = countyPopulations.select('BUYER_COUNTY.as("county"), 'STATE.as("stateNum"), 'year.as("countyYear"), $"population".cast(DoubleType))
     // val popJoinedUnemp = smallerPop.join(bigJoinedUnemp).filter('county === 'BUYER_COUNTY && 'year === 'countyYear)
 
-    val unempVA = new VectorAssembler().setInputCols(Array("year", "month", "value", "count")).setOutputCol("unempVect")
-    val popUnempWithVect = unempVA.transform(bigJoinedUnemp.na.drop(Seq("DOSAGE_UNIT", "year", "month", "value", "count")))
+    val unempVA = new VectorAssembler().setInputCols(Array("year", "value")).setOutputCol("unempVect")
+    val popUnempWithVect = unempVA.transform(bigJoinedUnemp.na.drop(Seq("DOSAGE_UNIT", "year", "value")))
 
     val popUnempLR = new LinearRegression().setFeaturesCol("unempVect").setLabelCol("DOSAGE_UNIT")
     val popUnempLRModel = popUnempLR.fit(popUnempWithVect)
