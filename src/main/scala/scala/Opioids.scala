@@ -172,7 +172,7 @@ object Opioids {
     // 16,547 with lat and lon
   
   // Using Linear Regression with unemployment
-    println(/*val unempCounties = */blsAreaData.where('areaName.contains("County")).count())
+    println(/*val unempCounties = */blsAreaData.where('areaCode === "F").count())
     countyPopulations.agg(countDistinct("county_name")).show()
 
 
