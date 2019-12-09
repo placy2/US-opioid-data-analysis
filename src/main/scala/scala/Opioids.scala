@@ -163,7 +163,7 @@ object Opioids {
     joinedLatLon.describe().show()
 
     val plotDataLatLon = joinedLatLon.select('lat.as[Double], 'lon.as[Double], 'DOSAGE_UNIT.as[Double]).collect()
-    val pointSizes = plotDataLatLon.map(x => (x._3 * 0.00000053) + 1)
+    val pointSizes = plotDataLatLon.map(x => (x._3 * 0.0000053) + 1)
 
     val locPlot = Plot.scatterPlot( 
       plotDataLatLon.map(_._2),
@@ -199,7 +199,7 @@ object Opioids {
     val unempVA = new VectorAssembler().setInputCols(Array("year", "value")).setOutputCol("unempVect")
     val popUnempWithVect = unempVA.transform(bigJoinedUnemp.na.drop(Seq("DOSAGE_UNIT", "year", "value")))
 
-    val popUnempLR = new LinearRegression().setFeaturesCol("unempVect").setLabelCol("DOSAGE_UNIT")
+    val popUnempLR = new LinearRegression().setRegParam(0.3).setFeaturesCol("unempVect").setLabelCol("DOSAGE_UNIT")
     val popUnempLRModel = popUnempLR.fit(popUnempWithVect)
     val predictions = popUnempLRModel.transform(popUnempWithVect)
 
