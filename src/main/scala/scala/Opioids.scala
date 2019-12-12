@@ -211,7 +211,7 @@ object Opioids {
     println("Average error: " + evaluator.evaluate(predictions))
 
 
-    val codes = predictions.select('code.as[String]).collect()
+    val codes = predictions.select('count.as[String]).collect()
     val originalDos = predictions.select('DOSAGE_UNIT.as[Double]).collect()
     val predDos = predictions.select('prediction.as[Double]).collect()
 
