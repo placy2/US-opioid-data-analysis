@@ -200,7 +200,7 @@ object Opioids {
     val popJoinedUnemp = smallerPop.join(joinedUnempCounties).filter('county === 'BUYER_COUNTY && 'year === 'countyYear)
 
     val unempVA = new VectorAssembler().setInputCols(Array("year", "population", "DOSAGE_UNIT", "count")).setOutputCol("unempVect")
-    val popUnempWithVect = unempVA.transform(bigJoinedUnemp.na.drop(Seq("DOSAGE_UNIT", "year", "population", "count")))
+    val popUnempWithVect = unempVA.transform(joinedUnempCounties.na.drop(Seq("DOSAGE_UNIT", "year", "population", "count")))
 
     // Correlation.corr(popUnempWithVect, "unempVect").show(false)
 
