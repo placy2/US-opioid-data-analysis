@@ -193,15 +193,18 @@ object Opioids {
     val unempCounties = blsAreaData.where('areaType === "F").withColumn("upperCounty", upper('areaName))
     val joinedUnempCounties = countyMonthlyData.join(unempCounties).where('upperCounty.contains('BUYER_COUNTY))//.show(5, false)
     
+    println(joinedUnempCounties.count())
+    println(blsStateData.count())
     val bigJoinedUnemp = joinedUnempCounties.join(blsStateData).where('id.contains('areaCode) && 'year === 'stateYear)
+    println(bigJoinedUnemp.count())
 
-    val smallerPop = countyPopulations.select('BUYER_COUNTY.as("county"), 'STATE.as("stateNum"), 'year.as("countyYear"), $"population".cast(DoubleType))
-    val popJoinedUnemp = smallerPop.join(bigJoinedUnemp).filter('county === 'BUYER_COUNTY && 'year === 'countyYear)
+    // val smallerPop = countyPopulations.select('BUYER_COUNTY.as("county"), 'STATE.as("stateNum"), 'year.as("countyYear"), $"population".cast(DoubleType))
+    // val popJoinedUnemp = smallerPop.join(bigJoinedUnemp).filter('county === 'BUYER_COUNTY && 'year === 'countyYear)
 
-    val unempVA = new VectorAssembler().setInputCols(Array("year", "value", "DOSAGE_UNIT", "count")).setOutputCol("unempVect")
-    val popUnempWithVect = unempVA.transform(bigJoinedUnemp.na.drop(Seq("DOSAGE_UNIT", "year", "value", "count")))
+    // val unempVA = new VectorAssembler().setInputCols(Array("year", "value", "DOSAGE_UNIT", "count")).setOutputCol("unempVect")
+    // val popUnempWithVect = unempVA.transform(bigJoinedUnemp.na.drop(Seq("DOSAGE_UNIT", "year", "value", "count")))
 
-    Correlation.corr(popUnempWithVect, "unempVect").show(false)
+    // Correlation.corr(popUnempWithVect, "unempVect").show(false)
 
     // val popUnempLR = new LinearRegression().setRegParam(0.3).setFeaturesCol("unempVect").setLabelCol("DOSAGE_UNIT")
     // val popUnempLRModel = popUnempLR.fit(popUnempWithVect)

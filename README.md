@@ -1,2 +1,4 @@
-# US-opioid-data-analysis
-An analysis of the DEA opioid distribution data published by the Washington Post in Sep. 2019, done using the SparkML and Swiftvis2 libraries in Scala.
+# Analysis of ARCOS Opioid Distribution Data
+## Data provided by the Washington Post, analysis done using Spark by Parker Lacy.
+
+
