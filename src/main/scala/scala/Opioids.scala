@@ -193,10 +193,7 @@ object Opioids {
     val unempCounties = blsAreaData.where('areaType === "F").withColumn("upperCounty", upper('areaName))
     val joinedUnempCounties = countyMonthlyData.join(unempCounties).where('upperCounty.contains('BUYER_COUNTY))//.show(5, false)
     
-    println(joinedUnempCounties.count())
-    println(blsStateData.count())
-    val bigJoinedUnemp = joinedUnempCounties.join(blsStateData).where('id.contains('areaCode) && 'year === 'stateYear)
-    println(bigJoinedUnemp.count())
+    joinedUnempCounties.printSchema()
 
     // val smallerPop = countyPopulations.select('BUYER_COUNTY.as("county"), 'STATE.as("stateNum"), 'year.as("countyYear"), $"population".cast(DoubleType))
     // val popJoinedUnemp = smallerPop.join(bigJoinedUnemp).filter('county === 'BUYER_COUNTY && 'year === 'countyYear)
