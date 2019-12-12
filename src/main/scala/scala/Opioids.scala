@@ -190,34 +190,35 @@ object Opioids {
     // 16,547 with lat and lon
   
   // Using Linear Regression with unemployment
-    val unempCounties = blsAreaData.where('areaType === "F").withColumn("upperCounty", upper('areaName))
+    val unempCounties = blsAreaData.where('areaType === "F")
     val joinedUnempCounties = countyMonthlyData.join(unempCounties).where('upperCounty.contains('BUYER_COUNTY))//.show(5, false)
     
-    joinedUnempCounties.printSchema()
+    //joinedUnempCounties.printSchema()
 
-    // val smallerPop = countyPopulations.select('BUYER_COUNTY.as("county"), 'STATE.as("stateNum"), 'year.as("countyYear"), $"population".cast(DoubleType))
-    // val popJoinedUnemp = smallerPop.join(bigJoinedUnemp).filter('county === 'BUYER_COUNTY && 'year === 'countyYear)
 
-    // val unempVA = new VectorAssembler().setInputCols(Array("year", "value", "DOSAGE_UNIT", "count")).setOutputCol("unempVect")
-    // val popUnempWithVect = unempVA.transform(bigJoinedUnemp.na.drop(Seq("DOSAGE_UNIT", "year", "value", "count")))
+    val smallerPop = countyPopulations.select('BUYER_COUNTY.as("county"), 'STATE.as("stateNum"), 'year.as("countyYear"), $"population".cast(DoubleType))
+    val popJoinedUnemp = smallerPop.join(joinedUnempCounties).filter('county === 'BUYER_COUNTY && 'year === 'countyYear)
+
+    val unempVA = new VectorAssembler().setInputCols(Array("year", "population", "DOSAGE_UNIT", "count")).setOutputCol("unempVect")
+    val popUnempWithVect = unempVA.transform(bigJoinedUnemp.na.drop(Seq("DOSAGE_UNIT", "year", "population", "count")))
 
     // Correlation.corr(popUnempWithVect, "unempVect").show(false)
 
-    // val popUnempLR = new LinearRegression().setRegParam(0.3).setFeaturesCol("unempVect").setLabelCol("DOSAGE_UNIT")
-    // val popUnempLRModel = popUnempLR.fit(popUnempWithVect)
-    // val predictions = popUnempLRModel.transform(popUnempWithVect)
+    val popUnempLR = new LinearRegression().setRegParam(0.3).setFeaturesCol("unempVect").setLabelCol("DOSAGE_UNIT")
+    val popUnempLRModel = popUnempLR.fit(popUnempWithVect)
+    val predictions = popUnempLRModel.transform(popUnempWithVect)
 
-    // println("Average error: " + evaluator.evaluate(predictions))
+    println("Average error: " + evaluator.evaluate(predictions))
 
 
-    // val codes = predictions.select('code.as[String]).collect()
-    // val originalDos = predictions.select('DOSAGE_UNIT.as[Double]).collect()
-    // val predDos = predictions.select('prediction.as[Double]).collect()
+    val codes = predictions.select('code.as[String]).collect()
+    val originalDos = predictions.select('DOSAGE_UNIT.as[Double]).collect()
+    val predDos = predictions.select('prediction.as[Double]).collect()
 
-    // val errorPlot = Plot.barPlot(codes, Seq(
-    //     DataAndColor(originalDos,  GreenARGB), DataAndColor(predDos, RedARGB)), false, 0.8, "Error in Regression based on Latitude/Longitude", "Individual Accounts", "Pills")
+    val errorPlot = Plot.barPlot(codes, Seq(
+        DataAndColor(originalDos,  GreenARGB), DataAndColor(predDos, RedARGB)), false, 0.8, "Error in Regression based on Latitude/Longitude", "Individual Accounts", "Pills")
 
-    // SwingRenderer(errorPlot, 1200, 800, true)
+    SwingRenderer(errorPlot, 1200, 800, true)
 
 
     
