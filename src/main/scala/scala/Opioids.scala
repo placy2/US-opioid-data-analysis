@@ -211,14 +211,14 @@ object Opioids {
     println("Average error: " + evaluator.evaluate(predictions))
 
 
-    val codes = predictions.select('count.as[String]).collect()
-    val originalDos = predictions.select('DOSAGE_UNIT.as[Double]).collect()
-    val predDos = predictions.select('prediction.as[Double]).collect()
+    // val codes = predictions.select('count.as[String]).collect()
+    // val originalDos = predictions.select('DOSAGE_UNIT.as[Double]).collect()
+    // val predDos = predictions.select('prediction.as[Double]).collect()
 
-    val errorPlot = Plot.barPlot(codes, Seq(
-        DataAndColor(originalDos,  GreenARGB), DataAndColor(predDos, RedARGB)), false, 0.8, "Error in Regression based on Latitude/Longitude", "Individual Accounts", "Pills")
+    // val errorPlot = Plot.barPlot(codes, Seq(
+    //     DataAndColor(originalDos,  GreenARGB), DataAndColor(predDos, RedARGB)), false, 0.8, "Error in Regression based on Latitude/Longitude", "Individual Accounts", "Pills")
 
-    SwingRenderer(errorPlot, 1200, 800, true)
+    // SwingRenderer(errorPlot, 1200, 800, true)
 
 
     
