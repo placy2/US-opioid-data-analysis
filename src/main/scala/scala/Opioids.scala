@@ -204,7 +204,7 @@ object Opioids {
 
     // Correlation.corr(popUnempWithVect, "unempVect").show(false)
 
-    val popUnempLR = new LinearRegression().setFeaturesCol("unempVect").setLabelCol("DOSAGE_UNIT")
+    val popUnempLR = new LinearRegression().setRegParam(0.5).setFeaturesCol("unempVect").setLabelCol("DOSAGE_UNIT")
     val popUnempLRModel = popUnempLR.fit(popUnempWithVect)
     val predictions = popUnempLRModel.transform(popUnempWithVect)
 
