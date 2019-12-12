@@ -204,11 +204,11 @@ object Opioids {
     val unempVA = new VectorAssembler().setInputCols(Array("year", "population", "DOSAGE_UNIT", "count")).setOutputCol("unempVect")
     val popUnempWithVect = unempVA.transform(popJoinedUnemp.na.drop(Seq("DOSAGE_UNIT", "year", "population", "count")))
 
-    val popUnempLR = new LinearRegression().setRegParam(0.5).setFeaturesCol("unempVect").setLabelCol("DOSAGE_UNIT")
-    val popUnempLRModel = popUnempLR.fit(popUnempWithVect)
-    val predictions = popUnempLRModel.transform(popUnempWithVect)
+    // val popUnempLR = new LinearRegression().setRegParam(0.5).setFeaturesCol("unempVect").setLabelCol("DOSAGE_UNIT")
+    // val popUnempLRModel = popUnempLR.fit(popUnempWithVect)
+    // val predictions = popUnempLRModel.transform(popUnempWithVect)
 
-    println("Average error: " + evaluator.evaluate(predictions))
+    // println("Average error: " + evaluator.evaluate(predictions))
 
     // Average error: 2.486565374270091
 
@@ -225,7 +225,7 @@ object Opioids {
     val plot = Plot.scatterPlot(plotData.map(_._1), plotData.map(_._2), "K-Means Clustering of Population and Opioid Distributions by # of Pills",
       "Population", "Pills Sent", symbolColor = plotData.map(c => cg(c._3)))
 
-    
+    SwingRenderer(plot, 1200, 800, true)
 
 
 
