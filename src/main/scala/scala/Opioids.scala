@@ -13,6 +13,8 @@ import org.apache.spark.ml.feature.VectorAssembler
 import org.apache.spark.ml.evaluation.RegressionEvaluator
 import org.apache.spark.ml.regression.LinearRegression
 import _root_.scalafx.scene.effect.BlendMode.Red
+import org.apache.spark.ml.feature.StandardScaler
+import org.apache.spark.ml.clustering.KMeans
 
 object Opioids {
   def main(args: Array[String]): Unit = {
@@ -202,24 +204,26 @@ object Opioids {
     val unempVA = new VectorAssembler().setInputCols(Array("year", "population", "DOSAGE_UNIT", "count")).setOutputCol("unempVect")
     val popUnempWithVect = unempVA.transform(popJoinedUnemp.na.drop(Seq("DOSAGE_UNIT", "year", "population", "count")))
 
-    // Correlation.corr(popUnempWithVect, "unempVect").show(false)
-
     val popUnempLR = new LinearRegression().setRegParam(0.5).setFeaturesCol("unempVect").setLabelCol("DOSAGE_UNIT")
     val popUnempLRModel = popUnempLR.fit(popUnempWithVect)
     val predictions = popUnempLRModel.transform(popUnempWithVect)
 
     println("Average error: " + evaluator.evaluate(predictions))
 
+    // Average error: 2.486565374270091
 
-    // val codes = predictions.select('count.as[String]).collect()
-    // val originalDos = predictions.select('DOSAGE_UNIT.as[Double]).collect()
-    // val predDos = predictions.select('prediction.as[Double]).collect()
+    val scaler = new StandardScaler().setInputCol("unempVect").setOutputCol("scaledVect")
+    val scalerModel = scaler.fit(popUnempWithVect)
+    val scaledData = scalerModel.transform(popUnempWithVect)
 
-    // val errorPlot = Plot.barPlot(codes, Seq(
-    //     DataAndColor(originalDos,  GreenARGB), DataAndColor(predDos, RedARGB)), false, 0.8, "Error in Regression based on Latitude/Longitude", "Individual Accounts", "Pills")
+    val kMeans = new KMeans().setK(3).setFeaturesCol("scaledVect")
+    val clusterModel = kMeans.fit(scaledData)
+    val clusteredData = clusterModel.transform(scaledData)
 
-    // SwingRenderer(errorPlot, 1200, 800, true)
-
+    val plotData = clusteredData.select('population.as[Double], 'DOSAGE_UNIT.as[Double], 'prediction.as[Double]).collect()
+    val cg = ColorGradient(0.0 -> BlueARGB, 1.0 -> GreenARGB, 2.0 -> RedARGB)
+    val plot = Plot.scatterPlot(plotData.map(_._1), plotData.map(_._2), "K-Means Clustering of Population and Opioid Distributions by # of Pills",
+      "Population", "Pills Sent", symbolColor = plotData.map(c => cg(c._3)))
 
     
 
