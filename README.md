@@ -19,13 +19,14 @@
  * West Virginia locations purchased and sent roughly 465 pills per capita
  * Washington, D.C. locations purchased and sent the least, 91 pills per capita
  * The states with large VA distributors, SC & KS, were only 3rd and 12th in per capita rates, respectively    
- Chart of per capita rate placeholder    
- ![PerCapitaPlot](/images/PerCapitaStatePlot)
+![Table1](/images/perCapitaTable1)    
+![Table2](/images/perCapitaTable2)    
+![PerCapitaPlot](/images/PerCapitaStatePlot)
  
 ***    
  The next thing I attempted to do was join this data with the unemployment data provided by the BLS. To make a long story short, I never managed to get an efficient enough filter on the individual datasets to achieve this with the resources and time available to me. The unemployment values themselves were not able to be used. What were, however, that ended up being surprisingly useful, is the latitude and longitude of the pharmacies, the same info for US Counties, and county-wide populations by year. This allowed me to run several linear regressions, using some of these fields, as well as the plots below. These show the pharmacies plotted by latitude and longitude, but the second scales the points by the number of pills ordered.    
- ![LocPlot1](/images/possibleLatLonPlot)    
- ![LocPlot2](/images/biggerLatLonPlot)    
+![LocPlot1](/images/possibleLatLonPlot)    
+![LocPlot2](/images/biggerLatLonPlot)    
  
  Each regression attempts to predict DOSAGE_UNIT, or what is better translated to the number of individual pills of hydrocodone or oxycodone in a shipment. The first one I created used the latitude and longitude alone, to get a good baseline. This managed to achieve an average error of 16,547 pills, which isn't horrific when compared to the scale of many of these orders. Or so I thought... when I managed to get more info in, I used the county population and the year/date of the sale to try and predict this number instead. I was shocked that I was able to get an average error of only 2.56 pills. Using the same fields, I also performed a K-means clustering with a k of 3, which converged faster than any of the other k values I tried. I would theorize this is because there are 3 main distinctions between types of buyer/seller in the ARCOS data, and they often order different amounts of pills on different schedules. (For example, one of the large VA distributors in SC or KS would order more pills, more frequently than a mom-and-pop pharmacy by a factor of 10 or more.)
  
